@@ -65,9 +65,9 @@ fill_cookie() {
     if [ ! "$cookie2" = "" ]; then
         varb2="var DualKey = '$cookie2';"
         aa=$(sed -n '/var DualKey =/=' $JD_SCRIPT)
-        bb=$((aa-a))
+        bb=$((aa-1))
         sed -i "${aa}d" $JD_SCRIPT
-        sed -i "${bbb}a ${varb}" $JD_SCRIPT
+        sed -i "${bb}a ${varb2}" $JD_SCRIPT
     fi
 
     stop=$(uci_get_by_type global stop)
@@ -140,7 +140,7 @@ update() {
     if [ $? -ne 0 ]; then
         cancel "501"
     fi
-    if [ $(echo "$local_ver < $remote_ver" | bc) -eq 1 ]; then
+    if [ $(expr $local_ver \< $remote_ver) -eq 1 ]; then
         cp -r $TEMP_SCRIPT $JD_SCRIPT
         fill_cookie
         uci set jd-dailybonus.@global[0].version=$remote_ver
